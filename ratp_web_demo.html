@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bus Times</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        h1 {
+            color: #333;
+        }
+        .bus-times {
+            margin-top: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Next Bus Departures</h1>
+    <div class="bus-times">
+        <table id="busTable">
+            <thead>
+                <tr>
+                    <th>Bus</th>
+                    <th>Direction</th>
+                    <th>Destination</th>
+                    <th>Stop</th>
+                    <th>Expected Departure Time (Paris)</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <script>
+        // API endpoint and key
+        const api_url = "https://prim.iledefrance-mobilites.fr/marketplace/stop-monitoring";
+        const api_key = "bH6c8yOh6cFDhml3QJ7eW0KDBSQkzzef";
+
+        const busLines = {
+            "144": "STIF:Line::C01169:",
+            "244": "STIF:Line::C01240:"
+        };
+        const monitoringRefs = {
+            "144": "STIF:StopPoint:Q:413090:",
+            "244": "STIF:StopPoint:Q:421321:"
+        };
+
+        // Function to convert UTC to Paris time
+        function convertToParisTime(utcTime) {
+            const date = new Date(utcTime);
+            const options = { timeZone: 'Europe/Paris', hour12: false, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+            return new Intl.DateTimeFormat('en-GB', options).format(date);
+        }
+
+        // Function to fetch bus times
+        async function fetchBusTimes(line, monitoringRef) {
+            const response = await fetch(`${api_url}?MonitoringRef=${monitoringRef}&LineRef=${line}`, {
+                headers: {
+                    'Accept': 'application/json',
+                    'apikey': api_key
+                }
+            });
+            if (!response.ok) {
+                console.error(`Error: ${response.status}`);
+                return null;
+            }
+            const data = await response.json();
+            return data.Siri.ServiceDelivery.StopMonitoringDelivery[0].MonitoredStopVisit;
+        }
+
+        // Function to render bus times to the table
+        async function renderBusTimes() {
+            const tableBody = document.querySelector("#busTable tbody");
+            tableBody.innerHTML = ''; // Clear the table
+
+            for (let bus in busLines) {
+                const visits = await fetchBusTimes(busLines[bus], monitoringRefs[bus]);
+                visits.forEach(visit => {
+                    const journey = visit.MonitoredVehicleJourney;
+                    const direction = journey.DirectionName[0].value;
+                    const destination = journey.DestinationName[0].value;
+                    const stopName = journey.MonitoredCall.StopPointName[0].value;
+                    const expectedTime = convertToParisTime(journey.MonitoredCall.ExpectedDepartureTime);
+                    const status = journey.MonitoredCall.DepartureStatus;
+
+                    // Add a row to the table
+                    const row = document.createElement("tr");
+                    row.innerHTML = `
+                        <td>${bus}</td>
+                        <td>${direction}</td>
+                        <td>${destination}</td>
+                        <td>${stopName}</td>
+                        <td>${expectedTime}</td>
+                        <td>${status}</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            }
+        }
+
+        // Call the function to render bus times on page load
+        renderBusTimes();
+    </script>
+
+</body>
+</html>
