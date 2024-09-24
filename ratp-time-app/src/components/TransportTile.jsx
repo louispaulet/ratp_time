@@ -1,18 +1,35 @@
 // src/components/TransportTile.jsx
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 function TransportTile({ bus }) {
+  const [timeLeft, setTimeLeft] = useState(bus.timeUntilDeparture);
+
+  useEffect(() => {
+    // Update timeLeft every minute
+    const timer = setInterval(() => {
+      setTimeLeft((prevTime) => prevTime - 1);
+    }, 60000); // 1 minute interval
+
+    // Cleanup on unmount
+    return () => clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    // Reset timeLeft if bus.timeUntilDeparture changes
+    setTimeLeft(bus.timeUntilDeparture);
+  }, [bus.timeUntilDeparture]);
+
   return (
     <div className="bg-white rounded shadow p-4 flex">
       {/* Left Side: Time Until Departure */}
       <div className="w-1/2 flex flex-col items-center justify-center border-r border-gray-300">
-        {bus.timeUntilDeparture > 0 ? (
+        {timeLeft > 0 ? (
           <>
-            <span className="text-6xl font-bold">{bus.timeUntilDeparture}</span>
+            <span className="text-6xl font-bold">{timeLeft}</span>
             <span className="text-xl">min</span>
           </>
         ) : (
-          <span className="text-4xl font-bold">Departed</span>
+          <span className="text-4xl font-bold">Due</span>
         )}
       </div>
 

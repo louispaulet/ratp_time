@@ -1,15 +1,40 @@
 // src/components/TransportDisplay.jsx
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import TransportTile from './TransportTile';
 
 function TransportDisplay() {
   const [busData, setBusData] = useState([]);
+  const [lastFetchTime, setLastFetchTime] = useState(null);
+  const [isFetching, setIsFetching] = useState(false);
+  const cacheDuration = 60000; // 1 minute in milliseconds
+
+  // Reference to store the interval ID
+  const intervalRef = useRef(null);
 
   useEffect(() => {
+    // Fetch data on component mount
     fetchBusData();
+
+    // Set up interval to refresh data every minute
+    intervalRef.current = setInterval(() => {
+      fetchBusData();
+    }, 60000); // 1 minute interval
+
+    // Clean up interval on component unmount
+    return () => clearInterval(intervalRef.current);
   }, []);
 
-  const fetchBusData = async () => {
+  const fetchBusData = async (bypassCache = false) => {
+    const now = Date.now();
+
+    if (!bypassCache && lastFetchTime && now - lastFetchTime < cacheDuration) {
+      // Cache is valid, do not fetch
+      console.log('Using cached data');
+      return;
+    }
+
+    setIsFetching(true);
+
     const api_url = 'https://prim.iledefrance-mobilites.fr/marketplace/stop-monitoring';
     const api_key = 'bH6c8yOh6cFDhml3QJ7eW0KDBSQkzzef';
 
@@ -69,7 +94,10 @@ function TransportDisplay() {
         console.error(`Error fetching data for bus ${bus}:`, error);
       }
     }
+
     setBusData(busDataArray);
+    setLastFetchTime(Date.now());
+    setIsFetching(false);
   };
 
   // Function to convert UTC to Paris time (returns formatted string)
@@ -83,7 +111,6 @@ function TransportDisplay() {
       day: '2-digit',
       hour: '2-digit',
       minute: '2-digit',
-      second: '2-digit',
     };
     return new Intl.DateTimeFormat('en-GB', options).format(date);
   };
@@ -103,10 +130,28 @@ function TransportDisplay() {
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      {busData.map((bus, index) => (
-        <TransportTile key={index} bus={bus} />
-      ))}
+    <div>
+      {/* Refresh Button */}
+      <div className="flex justify-end mb-2">
+        <button
+          onClick={() => fetchBusData(true)} // Pass true to bypass cache
+          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 disabled:opacity-50"
+          disabled={isFetching}
+        >
+          {isFetching ? 'Refreshing...' : 'Refresh'}
+        </button>
+      </div>
+
+      {/* Bus Tiles */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {busData.length > 0 ? (
+          busData.map((bus, index) => (
+            <TransportTile key={index} bus={bus} />
+          ))
+        ) : (
+          <p>No bus data available.</p>
+        )}
+      </div>
     </div>
   );
 }
