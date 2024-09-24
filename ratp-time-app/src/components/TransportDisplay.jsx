@@ -143,7 +143,7 @@ function TransportDisplay() {
       </div>
 
       {/* Bus Tiles */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         {busData.length > 0 ? (
           busData.map((bus, index) => (
             <TransportTile key={index} bus={bus} />
