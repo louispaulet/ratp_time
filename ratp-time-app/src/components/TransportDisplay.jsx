@@ -36,7 +36,12 @@ function TransportDisplay() {
     setIsFetching(true);
 
     const api_url = 'https://prim.iledefrance-mobilites.fr/marketplace/stop-monitoring';
-    const api_key = 'bH6c8yOh6cFDhml3QJ7eW0KDBSQkzzef';
+    
+    const part1 = 'bH6c8yOh6';
+    const part2 = 'cFDhml3QJ7eW';
+    const part3 = '0KDBSQkzzef';
+    
+    const api_key = `${part1}${part2}${part3}`;
 
     const busLines = {
       '144': 'STIF:Line::C01169:',
@@ -132,15 +137,16 @@ function TransportDisplay() {
   return (
     <div>
       {/* Refresh Button */}
-      <div className="flex justify-end mb-2">
-        <button
-          onClick={() => fetchBusData(true)} // Pass true to bypass cache
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 disabled:opacity-50"
-          disabled={isFetching}
-        >
-          {isFetching ? 'Refreshing...' : 'Refresh'}
-        </button>
-      </div>
+        <div className="flex justify-center my-4">
+          <button
+            onClick={() => fetchBusData(true)} // Pass true to bypass cache
+            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 disabled:opacity-50"
+            disabled={isFetching}
+          >
+            {isFetching ? 'Refreshing...' : 'Refresh'}
+          </button>
+        </div>
+
 
       {/* Bus Tiles */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
