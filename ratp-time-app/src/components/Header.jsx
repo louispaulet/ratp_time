@@ -1,6 +1,6 @@
 // src/components/Header.jsx
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React from 'react';
+import { Link } from 'react-router-dom';
 
 function Header() {
   return (
@@ -9,11 +9,12 @@ function Header() {
         <Link to="/" className="font-bold">Bus Times App</Link>
         <div>
           <Link to="/" className="mr-4 hover:underline">Home</Link>
-          <Link to="/about" className="hover:underline">About</Link>
+          <Link to="/about" className="mr-4 hover:underline">About</Link>
+          <Link to="/more-times" className="hover:underline">More Times</Link>
         </div>
       </nav>
     </header>
-  )
+  );
 }
 
-export default Header
+export default Header;

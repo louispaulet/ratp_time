@@ -2,7 +2,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import TransportTile from './TransportTile';
 
-function TransportDisplay() {
+function TransportDisplay({ busLines, monitoringRefs }) {
   const [busData, setBusData] = useState([]);
   const [lastFetchTime, setLastFetchTime] = useState(null);
   const [isFetching, setIsFetching] = useState(false);
@@ -42,24 +42,6 @@ function TransportDisplay() {
     const part3 = '0KDBSQkzzef';
     
     const api_key = `${part1}${part2}${part3}`;
-
-    const busLines = {
-      '144': 'STIF:Line::C01169:',
-      '244': 'STIF:Line::C01240:',
-      // 'A_1': 'STIF:Line::C01742:',
-      // 'A_2': 'STIF:Line::C01742:',
-      // 'A_3': 'STIF:Line::C01742:',
-      // 'A_4': 'STIF:Line::C01742:',
-    };
-
-    const monitoringRefs = {
-      '144': 'STIF:StopPoint:Q:413091:',
-      '244': 'STIF:StopPoint:Q:421321:',
-      // 'A_1': 'STIF:StopPoint:Q:474020:',
-      // 'A_2': 'STIF:StopPoint:Q:474023:',
-      // 'A_3': 'STIF:StopPoint:Q:474021:',
-      // 'A_4': 'STIF:StopPoint:Q:474022:',
-    };
 
     const busDataArray = [];
 
@@ -137,16 +119,15 @@ function TransportDisplay() {
   return (
     <div>
       {/* Refresh Button */}
-        <div className="flex justify-center my-4">
-          <button
-            onClick={() => fetchBusData(true)} // Pass true to bypass cache
-            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 disabled:opacity-50"
-            disabled={isFetching}
-          >
-            {isFetching ? 'Refreshing...' : 'Refresh'}
-          </button>
-        </div>
-
+      <div className="flex justify-center my-4">
+        <button
+          onClick={() => fetchBusData(true)} // Pass true to bypass cache
+          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 disabled:opacity-50"
+          disabled={isFetching}
+        >
+          {isFetching ? 'Refreshing...' : 'Refresh'}
+        </button>
+      </div>
 
       {/* Bus Tiles */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
