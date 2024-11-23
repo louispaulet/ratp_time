@@ -120,13 +120,15 @@ function TransportDisplay({ busLines, monitoringRefs }) {
     <div>
       {/* Refresh Button */}
       <div className="flex justify-center my-4">
-        <button
-          onClick={() => fetchBusData(true)} // Pass true to bypass cache
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 disabled:opacity-50"
-          disabled={isFetching}
-        >
-          {isFetching ? 'Refreshing...' : 'Refresh'}
-        </button>
+    <button
+      onClick={() => fetchBusData(true)} // Pass true to bypass cache
+      className={`bg-gray-800 text-white px-4 py-2 rounded-md 
+        hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200`}
+      disabled={isFetching}
+    >
+      {isFetching ? 'Refreshing...' : 'Refresh'}
+    </button>
+
       </div>
 
       {/* Bus Tiles */}
