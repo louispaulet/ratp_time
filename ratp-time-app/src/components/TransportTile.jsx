@@ -1,4 +1,3 @@
-// src/components/TransportTile.jsx
 import React, { useState, useEffect } from 'react';
 
 function TransportTile({ bus }) {
@@ -20,37 +19,39 @@ function TransportTile({ bus }) {
   }, [bus.timeUntilDeparture]);
 
   return (
-    <div className="bg-white rounded-xl shadow-md p-6 flex flex-col items-center justify-between transition-transform duration-300 hover:scale-105 max-w-sm mx-auto mb-4">
+    <div className="bg-black text-white border border-gray-700 rounded-xl p-6 flex flex-col items-center justify-between max-w-sm mx-auto mb-4 hover:shadow-lg transition-transform duration-300 hover:scale-105">
       {/* Time Until Departure */}
-      <div className="flex items-center justify-center bg-blue-100 rounded-full w-20 h-20 mb-4">
+      <div className="flex items-center justify-center bg-gray-800 rounded-full w-20 h-20 mb-4">
         {timeLeft > 0 ? (
           <>
-            <span className="text-4xl font-bold text-blue-600">{timeLeft}</span>
-            <span className="text-sm font-medium text-gray-500">min</span>
+            <span className="text-4xl font-bold text-white">{timeLeft}</span>
+            <span className="text-sm font-medium text-gray-400 ml-1">min</span>
           </>
         ) : (
-          <span className="text-4xl font-bold text-red-600">Due</span>
+          <span className="text-4xl font-bold text-gray-400">Due</span>
         )}
       </div>
 
       {/* Bus Information */}
       <div className="w-full text-center">
-        <h2 className="text-xl font-bold text-gray-800 mb-2">Bus {bus.number}</h2>
-        <p className="text-sm text-gray-600 mb-1">
-          <strong className="font-medium text-blue-500">Direction:</strong> {bus.direction}
+        <h2 className="text-xl font-bold mb-2">Bus {bus.number}</h2>
+        <p className="text-sm text-gray-400 mb-1">
+          <strong className="font-medium">Direction:</strong> {bus.direction}
         </p>
-        <p className="text-sm text-gray-600 mb-1">
-          <strong className="font-medium text-blue-500">Destination:</strong> {bus.destination}
+        <p className="text-sm text-gray-400 mb-1">
+          <strong className="font-medium">Destination:</strong> {bus.destination}
         </p>
-        <p className="text-sm text-gray-600 mb-1">
-          <strong className="font-medium text-blue-500">Stop:</strong> {bus.stopName}
+        <p className="text-sm text-gray-400 mb-1">
+          <strong className="font-medium">Stop:</strong> {bus.stopName}
         </p>
-        <p className="text-sm text-gray-600 mb-1">
-          <strong className="font-medium text-blue-500">Departure Time:</strong> {bus.expectedTime}
+        <p className="text-sm text-gray-400 mb-1">
+          <strong className="font-medium">Departure Time:</strong> {bus.expectedTime}
         </p>
-        <p className={`text-sm font-bold mt-2 ${
-          bus.status === 'onTime' ? 'text-green-500' : 'text-red-500'
-        }`}>
+        <p
+          className={`text-sm font-bold mt-2 ${
+            bus.status === 'onTime' ? 'text-gray-300' : 'text-gray-500'
+          }`}
+        >
           <strong>Status:</strong> {bus.status}
         </p>
       </div>
