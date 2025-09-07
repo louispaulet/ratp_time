@@ -2,7 +2,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import TransportTile from './TransportTile';
 
-function TransportDisplay({ busLines, monitoringRefs }) {
+function TransportDisplay({ busLines, monitoringRefs, destinationPattern }) {
   const [busData, setBusData] = useState([]);
   const [lastFetchTime, setLastFetchTime] = useState(null);
   const [isFetching, setIsFetching] = useState(false);
@@ -84,9 +84,9 @@ function TransportDisplay({ busLines, monitoringRefs }) {
           if (!expectedDepartureTimeUTC) return;
           const destination = journey.DestinationName?.[0]?.value || '';
 
-          // Filter to only show trains going to Charles de Gaulle – Étoile
-          if (!/charles\s+de\s+gaulle/i.test(destination)) {
-            return; // skip other directions
+          // If a destinationPattern is provided, filter by it
+          if (destinationPattern instanceof RegExp) {
+            if (!destinationPattern.test(destination)) return;
           }
 
           const busInfo = {

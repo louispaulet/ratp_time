@@ -1,6 +1,6 @@
-# Metro 6 — Chevaleret (RATP Time App)
+# Metro Times — Chevaleret + Place d’Italie (RATP Time App)
 
-Real‑time departures for Paris Metro line 6 at Chevaleret (towards Charles de Gaulle – Étoile) using the Île‑de‑France Mobilités SIRI Stop Monitoring API. Built with React + Vite, styled with Tailwind.
+Real‑time departures for Paris Metro using the Île‑de‑France Mobilités SIRI Stop Monitoring API. Built with React + Vite, styled with Tailwind.
 
 Live site (if configured): https://ratp.thefrenchartist.dev
 
@@ -8,7 +8,23 @@ Live site (if configured): https://ratp.thefrenchartist.dev
 - Real‑time next departures (minutes remaining, destination, direction, stop name, scheduled time, status)
 - Auto‑refresh every minute with a 1‑minute cache to limit API calls
 - Manual Refresh button
-- Focused single page for Metro 6 at Chevaleret
+- Homepage sections for:
+  - Metro 6 at Chevaleret → Charles de Gaulle – Étoile
+  - Metro 7 at Place d’Italie → (direction La Courneuve – 8 Mai 1945, passes Chaussée d’Antin – La Fayette)
+
+## Monitored Lines and Stops
+
+Current monitored pairs (as configured in `src/pages/HomePage.jsx`):
+
+- Metro 6
+  - LineRef: `STIF:Line::C01376:`
+  - MonitoringRef (Chevaleret platform): `STIF:StopPoint:Q:22174:`
+  - Destination filter: contains “Charles de Gaulle – Étoile”
+
+- Metro 7
+  - LineRef: `STIF:Line::C01377:`
+  - MonitoringRef (Place d’Italie platform): `STIF:StopPoint:Q:463026:`
+  - Destination filter: contains “La Courneuve – 8 Mai 1945” (direction that serves Chaussée d’Antin – La Fayette)
 
 ## Tech Stack
 - React 18 + Vite 5
@@ -38,9 +54,10 @@ npm run preview
 The app is client‑side and fetches directly from the IDFM SIRI Stop Monitoring API.
 
 - IDs are defined in `src/pages/HomePage.jsx`:
-  - `LineRef` for Metro 6: `STIF:Line::C01376:`
-  - `MonitoringRef` for Chevaleret (platform): `STIF:StopPoint:Q:22174:`
-  These values are taken from `perimetre-des-donnees-tr-disponibles-plateforme-idfm.csv` and match the SIRI identifiers in swagger.json.
+  - Metro 6 → `LineRef: STIF:Line::C01376:` and `MonitoringRef: STIF:StopPoint:Q:22174:` (Chevaleret)
+  - Metro 7 → `LineRef: STIF:Line::C01377:` and `MonitoringRef: STIF:StopPoint:Q:463026:` (Place d’Italie)
+  - Destination filters are RegExps set via the `destinationPattern` prop in `TransportDisplay` to keep only relevant direction.
+  These values are taken from `documentation/perimetre-des-donnees-tr-disponibles-plateforme-idfm.csv` and align with the SIRI identifiers described in `documentation/swagger.json`.
 
 - Auto refresh: Implemented in `src/components/TransportDisplay.jsx` with a 60s interval and a 60s cache window; the Refresh button can bypass the cache.
 
@@ -59,7 +76,7 @@ If you ever need to re‑derive IDs from open data:
 `curl -H "Accept: application/json" -H "apikey: <YOUR_API_KEY>" \
   "https://prim.iledefrance-mobilites.fr/marketplace/stop-monitoring?MonitoringRef=<STOPPOINT_ID>&LineRef=<LINE_REF>" | jq`
 
-You should see `MonitoredStopVisit` entries with `DestinationName` including “Charles de Gaulle – Étoile”. If empty, double‑check the IDs.
+You should see `MonitoredStopVisit` entries with matching `DestinationName` (e.g., “Charles de Gaulle – Étoile” for M6, “La Courneuve – 8 Mai 1945” for M7). If empty, try the other platform ID for the station or remove the `LineRef` parameter to test.
 
 ### API Key and Security Note
 The code currently assembles an API key string inside `src/components/TransportDisplay.jsx` for the IDFM API. Exposing API keys in client code is not secure for production.
