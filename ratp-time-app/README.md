@@ -107,6 +107,11 @@ If using a project subpath (no custom domain), ensure Vite `base` reflects your 
 - `src/components/*` – UI components (Header, Footer, TransportDisplay, TransportTile)
 - `public/CNAME` – Custom domain configuration for GitHub Pages
 
+## Contributing
+- Read `AGENTS.md` for coding conventions, file layout, and how to add/update monitored lines and stops.
+- Run `npm run lint` before submitting changes; keep edits minimal and focused.
+- If behavior or routes change, update both `README.md` and `src/pages/AboutPage.jsx`.
+
 ## Disclaimer
 This project is not affiliated with RATP or Île‑de‑France Mobilités. Information is provided as‑is and may differ from on‑site signage.
 
