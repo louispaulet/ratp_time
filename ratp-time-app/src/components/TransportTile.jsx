@@ -36,9 +36,6 @@ function TransportTile({ bus }) {
       <div style={{width:'100%', textAlign:'center'}}>
         <h2 className="md-title-medium" style={{marginBottom:8}}>Metro {bus.number}</h2>
         <p className="md-muted" style={{marginBottom:4}}>
-          <span className="md-title-small" style={{fontWeight:600}}>Direction:</span> {bus.direction}
-        </p>
-        <p className="md-muted" style={{marginBottom:4}}>
           <span className="md-title-small" style={{fontWeight:600}}>Destination:</span> {bus.destination}
         </p>
         <p className="md-muted" style={{marginBottom:4}}>
