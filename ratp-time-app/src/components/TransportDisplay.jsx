@@ -48,58 +48,70 @@ function TransportDisplay({ metroLines, metroMonitoringRefs, destinationPattern,
 
     for (const lineLabel in metroLines) {
       try {
-        const monitoringRef = metroMonitoringRefs[lineLabel];
+        const monitoringRefValue = metroMonitoringRefs[lineLabel];
         const lineRef = metroLines[lineLabel];
+        // Allow a single MonitoringRef string or an array of MonitoringRefs
+        const monitoringRefs = Array.isArray(monitoringRefValue)
+          ? monitoringRefValue
+          : [monitoringRefValue];
 
-        // Build query per swagger: required MonitoringRef, optional LineRef
-        const params = new URLSearchParams({ MonitoringRef: monitoringRef });
-        if (lineRef) params.set('LineRef', lineRef);
+        for (const monitoringRef of monitoringRefs) {
+          // Build query per swagger: required MonitoringRef, optional LineRef
+          const params = new URLSearchParams({ MonitoringRef: monitoringRef });
+          if (lineRef) params.set('LineRef', lineRef);
 
-        const doRequest = async (query) =>
-          fetch(`${api_url}?${query.toString()}`, {
-            headers: {
-              Accept: 'application/json',
-              apikey: api_key,
-            },
-          });
+          const doRequest = async (query) =>
+            fetch(`${api_url}?${query.toString()}`, {
+              headers: {
+                Accept: 'application/json',
+                apikey: api_key,
+              },
+            });
 
-        let response = await doRequest(params);
-        // If IDs combination is not accepted (400), retry with only MonitoringRef
-        if (response.status === 400 && lineRef) {
-          console.warn(
-            `400 for line ${lineLabel} with LineRef; retrying with MonitoringRef only.`
-          );
-          const fallback = new URLSearchParams({ MonitoringRef: monitoringRef });
-          response = await doRequest(fallback);
-        }
-        if (!response.ok) {
-          console.error(`Error fetching data for line ${lineLabel}: ${response.status}`);
-          continue;
-        }
-        const data = await response.json();
-        const visits = data?.Siri?.ServiceDelivery?.StopMonitoringDelivery?.[0]?.MonitoredStopVisit || [];
-        visits.forEach((visit) => {
-          const journey = visit.MonitoredVehicleJourney;
-          const expectedDepartureTimeUTC = journey?.MonitoredCall?.ExpectedDepartureTime;
-          if (!expectedDepartureTimeUTC) return;
-          const destination = journey.DestinationName?.[0]?.value || '';
-
-          // If a destinationPattern is provided, filter by it
-          if (destinationPattern instanceof RegExp) {
-            if (!destinationPattern.test(destination)) return;
+          let response = await doRequest(params);
+          // If IDs combination is not accepted (400), retry with only MonitoringRef
+          if (response.status === 400 && lineRef) {
+            console.warn(
+              `400 for line ${lineLabel} with LineRef; retrying with MonitoringRef only.`
+            );
+            const fallback = new URLSearchParams({ MonitoringRef: monitoringRef });
+            response = await doRequest(fallback);
           }
+          if (!response.ok) {
+            console.error(`Error fetching data for line ${lineLabel}: ${response.status}`);
+            continue;
+          }
+          const data = await response.json();
+          const visits = data?.Siri?.ServiceDelivery?.StopMonitoringDelivery?.[0]?.MonitoredStopVisit || [];
+          visits.forEach((visit) => {
+            const journey = visit.MonitoredVehicleJourney;
+            const call = journey?.MonitoredCall;
+            // Prefer ExpectedDepartureTime, else fall back to ExpectedArrivalTime, or aimed times
+            const expectedTimeUTC =
+              call?.ExpectedDepartureTime ||
+              call?.ExpectedArrivalTime ||
+              call?.AimedDepartureTime ||
+              call?.AimedArrivalTime;
+            if (!expectedTimeUTC) return;
+            const destination = journey.DestinationName?.[0]?.value || '';
 
-          const metroInfo = {
-            number: lineLabel,
-            direction: journey?.DirectionName?.[0]?.value || '',
-            destination,
-            stopName: journey?.MonitoredCall?.StopPointName?.[0]?.value || '',
-            expectedTime: convertToParisTime(expectedDepartureTimeUTC),
-            status: journey?.MonitoredCall?.DepartureStatus,
-            timeUntilDeparture: computeTimeUntilDeparture(expectedDepartureTimeUTC),
-          };
-          metroDataArray.push(metroInfo);
-        });
+            // If a destinationPattern is provided, filter by it
+            if (destinationPattern instanceof RegExp) {
+              if (!destinationPattern.test(destination)) return;
+            }
+
+            const metroInfo = {
+              number: lineLabel,
+              direction: journey?.DirectionName?.[0]?.value || '',
+              destination,
+              stopName: journey?.MonitoredCall?.StopPointName?.[0]?.value || '',
+              expectedTime: convertToParisTime(expectedTimeUTC),
+              status: journey?.MonitoredCall?.DepartureStatus,
+              timeUntilDeparture: computeTimeUntilDeparture(expectedTimeUTC),
+            };
+            metroDataArray.push(metroInfo);
+          });
+        }
       } catch (error) {
         console.error(`Error fetching data for line ${lineLabel}:`, error);
       }

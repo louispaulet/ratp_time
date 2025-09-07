@@ -2,8 +2,10 @@ import React from 'react';
 import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
 import Footer from './components/Footer';
-import HomePage from './pages/HomePage';
+import AutoPage from './pages/AutoPage';
+import ForwardsPage from './pages/ForwardsPage';
 import AboutPage from './pages/AboutPage';
+import ReturnTripPage from './pages/ReturnTripPage';
 // MoreTimesPage removed for metro-only focus
 
 function App() {
@@ -13,8 +15,10 @@ function App() {
         <Header />
         <main className="flex-grow container">
           <Routes>
-            <Route path="/" element={<HomePage />} />
+            <Route path="/" element={<AutoPage />} />
+            <Route path="/forwards" element={<ForwardsPage />} />
             <Route path="/about" element={<AboutPage />} />
+            <Route path="/return" element={<ReturnTripPage />} />
             {/* More Times route removed */}
           </Routes>
         </main>
