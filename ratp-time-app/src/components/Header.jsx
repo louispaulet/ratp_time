@@ -11,6 +11,7 @@ function Header() {
         </Link>
         <div className="md-appbar__nav" style={{display:'flex', gap: 8}}>
           <Link to="/">Home</Link>
+          <Link to="/forwards">Forwards</Link>
           <Link to="/return">Return</Link>
           <Link to="/about">About</Link>
         </div>

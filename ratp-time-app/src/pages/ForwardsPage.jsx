@@ -2,7 +2,7 @@
 import React from 'react';
 import TransportDisplay from '../components/TransportDisplay';
 
-function HomePage() {
+function ForwardsPage() {
   // IDFM SIRI identifiers (validated):
   // - Metro 6 (LineRef) + Chevaleret stop point (MonitoringRef)
   // - Metro 7 (LineRef) + Place d’Italie stop point (MonitoringRef)
@@ -41,4 +41,4 @@ function HomePage() {
   );
 }
 
-export default HomePage;
+export default ForwardsPage;
