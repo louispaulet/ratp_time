@@ -1,30 +1,35 @@
-# Metro Times — Chevaleret + Place d’Italie (RATP Time App)
+# Metro Times — Paris Metro Real‑Time Departures
 
-Real‑time departures for Paris Metro using the Île‑de‑France Mobilités SIRI Stop Monitoring API. Built with React + Vite, styled with Tailwind.
+Real‑time departures for selected Paris Metro lines using the Île‑de‑France Mobilités (IDFM) SIRI Stop Monitoring API. Built with React + Vite, styled with Tailwind.
 
 Live site (if configured): https://ratp.thefrenchartist.dev
 
 ## Features
 - Real‑time next departures (minutes remaining, destination, direction, stop name, scheduled time, status)
 - Auto‑refresh every minute with a 1‑minute cache to limit API calls
-- Manual refresh button
-- Homepage sections for:
-  - Metro 6 at Chevaleret → Charles de Gaulle – Étoile
-  - Metro 7 at Place d’Italie → (direction La Courneuve – 8 Mai 1945, passes Chaussée d’Antin – La Fayette)
+- Manual refresh button to bypass cache
+- Pages:
+  - Auto — selects Forwards before noon and Return after noon (Europe/Paris)
+  - Forwards — morning commute directions (Chevaleret → Étoile, Place d’Italie → La Courneuve)
+  - Return — evening commute directions (Chaussée d’Antin → Place d’Italie, Place d’Italie → Chevaleret)
 
 ## Monitored Lines and Stops
 
-Current monitored pairs (as configured in `src/pages/HomePage.jsx`):
+Configured in `src/pages/ForwardsPage.jsx` and `src/pages/ReturnTripPage.jsx`:
 
 - Metro 6
   - LineRef: `STIF:Line::C01376:`
-  - MonitoringRef (Chevaleret platform): `STIF:StopPoint:Q:22174:`
+  - Forwards → MonitoringRef: `STIF:StopPoint:Q:22174:` (Chevaleret)
+  - Return → MonitoringRef: `STIF:StopPoint:Q:463003:` (Place d’Italie alternative platform)
   - Destination filter: contains “Charles de Gaulle – Étoile”
 
 - Metro 7
   - LineRef: `STIF:Line::C01377:`
-  - MonitoringRef (Place d’Italie platform): `STIF:StopPoint:Q:463026:`
-  - Destination filter: contains “La Courneuve – 8 Mai 1945” (direction that serves Chaussée d’Antin – La Fayette)
+  - Forwards → MonitoringRef: `STIF:StopPoint:Q:463026:` (Place d’Italie)
+  - Return → MonitoringRefs: `STIF:StopPoint:Q:463145:` and `STIF:StopPoint:Q:22388:` (Chaussée d’Antin – La Fayette platforms)
+  - Destination filters:
+    - Forwards: contains “La Courneuve – 8 Mai 1945” (direction serving Chaussée d’Antin)
+    - Return: contains “Italie”, “Ivry”, or “Villejuif”
 
 ## Tech Stack
 - React 18 + Vite 5
@@ -53,13 +58,13 @@ npm run preview
 ## Configuration
 The app is client‑side and fetches directly from the IDFM SIRI Stop Monitoring API.
 
-- IDs are defined in `src/pages/HomePage.jsx`:
-  - Metro 6 → `LineRef: STIF:Line::C01376:` and `MonitoringRef: STIF:StopPoint:Q:22174:` (Chevaleret)
-  - Metro 7 → `LineRef: STIF:Line::C01377:` and `MonitoringRef: STIF:StopPoint:Q:463026:` (Place d’Italie)
-  - Destination filters are RegExps set via the `destinationPattern` prop in `TransportDisplay` to keep only relevant direction.
-  These values are taken from `documentation/perimetre-des-donnees-tr-disponibles-plateforme-idfm.csv` and align with the SIRI identifiers described in `documentation/swagger.json`.
+- IDs and filters are defined in `src/pages/ForwardsPage.jsx` and `src/pages/ReturnTripPage.jsx`.
+  - Destination filters are RegExps set via the `destinationPattern` prop in `TransportDisplay` to keep only the relevant direction.
+  - Values come from `documentation/perimetre-des-donnees-tr-disponibles-plateforme-idfm.csv` and align with the SIRI identifiers in `documentation/swagger.json`.
 
-- Auto‑refresh: Implemented in `src/components/TransportDisplay.jsx` with a 60s interval and a 60s cache window; the Refresh button can bypass the cache.
+- Auto‑refresh: Implemented in `src/components/TransportDisplay.jsx` with a 60s interval and a 60s cache window; the Refresh button bypasses the cache.
+
+- Auto page selection: Implemented in `src/pages/AutoPage.jsx` using Europe/Paris time to choose Forwards (before noon) or Return (after noon).
 
 ### How to find or validate IDs (optional)
 
@@ -86,8 +91,8 @@ Recommended options:
 - Or, use a Vite env var (e.g., `VITE_IDFM_API_KEY`) and keep your `.env` files out of version control; note this still exposes the key to end users at runtime, so prefer a proxy for production
 
 ## Routing and Hosting
-- The app uses `HashRouter` to support static hosting on GitHub Pages.
-- The project is configured with a custom domain via `public/CNAME` and `homepage` in `package.json`.
+- Uses `HashRouter` for static hosting compatibility (e.g., GitHub Pages).
+- Configured with a custom domain via `public/CNAME` and `homepage` in `package.json`.
 
 ## Deployment (GitHub Pages)
 Build and deploy to the `gh-pages` branch using the included script:
@@ -98,9 +103,12 @@ npm run deploy
 If using a project subpath (no custom domain), ensure Vite `base` reflects your repo name (e.g., `base: '/your-repo/'`). With a custom root domain, `base: '/'` is correct.
 
 ## Project Structure (selected)
-- `src/pages/*` – Page components (Home, About)
+- `src/pages/*` – Page components (Auto, Forwards, Return, About)
 - `src/components/*` – UI components (Header, Footer, TransportDisplay, TransportTile)
 - `public/CNAME` – Custom domain configuration for GitHub Pages
+
+## Disclaimer
+This project is not affiliated with RATP or Île‑de‑France Mobilités. Information is provided as‑is and may differ from on‑site signage.
 
 ## Acknowledgements
 - Data via Île‑de‑France Mobilités SIRI Stop Monitoring API
