@@ -1,17 +1,30 @@
-# RATP Time App
+# Metro Times — Chevaleret + Place d’Italie (RATP Time App)
 
-Real‑time departures for Île‑de‑France transport (RATP / IDFM) using the SIRI Stop Monitoring API. Built with React + Vite, styled with Tailwind, and deployed to GitHub Pages.
+Real‑time departures for Paris Metro using the Île‑de‑France Mobilités SIRI Stop Monitoring API. Built with React + Vite, styled with Tailwind.
 
-Live site: https://ratp.thefrenchartist.dev
+Live site (if configured): https://ratp.thefrenchartist.dev
 
 ## Features
 - Real‑time next departures (minutes remaining, destination, direction, stop name, scheduled time, status)
 - Auto‑refresh every minute with a 1‑minute cache to limit API calls
 - Manual Refresh button
-- Multiple pages via React Router (using `HashRouter` for static hosting)
-  - Home: selected bus lines (e.g., 144, 244)
-  - More Times: additional lines/stops (e.g., bus 144 at another stop, RER A)
-  - About: brief description
+- Homepage sections for:
+  - Metro 6 at Chevaleret → Charles de Gaulle – Étoile
+  - Metro 7 at Place d’Italie → (direction La Courneuve – 8 Mai 1945, passes Chaussée d’Antin – La Fayette)
+
+## Monitored Lines and Stops
+
+Current monitored pairs (as configured in `src/pages/HomePage.jsx`):
+
+- Metro 6
+  - LineRef: `STIF:Line::C01376:`
+  - MonitoringRef (Chevaleret platform): `STIF:StopPoint:Q:22174:`
+  - Destination filter: contains “Charles de Gaulle – Étoile”
+
+- Metro 7
+  - LineRef: `STIF:Line::C01377:`
+  - MonitoringRef (Place d’Italie platform): `STIF:StopPoint:Q:463026:`
+  - Destination filter: contains “La Courneuve – 8 Mai 1945” (direction that serves Chaussée d’Antin – La Fayette)
 
 ## Tech Stack
 - React 18 + Vite 5
@@ -38,18 +51,32 @@ npm run preview
 ```
 
 ## Configuration
-The app is client‑side and currently fetches directly from the IDFM SIRI Stop Monitoring API.
+The app is client‑side and fetches directly from the IDFM SIRI Stop Monitoring API.
 
-- Lines and stops shown on each page are defined in code:
-  - Home page: `src/pages/HomePage.jsx`
-  - More Times page: `src/pages/MoreTimesPage.jsx`
-  Provide mappings for `busLines` (line refs) and `monitoringRefs` (stop point refs):
-  ```js
-  const busLines = { '144': 'STIF:Line::C01169:' };
-  const monitoringRefs = { '144': 'STIF:StopPoint:Q:413091:' };
-  ```
+- IDs are defined in `src/pages/HomePage.jsx`:
+  - Metro 6 → `LineRef: STIF:Line::C01376:` and `MonitoringRef: STIF:StopPoint:Q:22174:` (Chevaleret)
+  - Metro 7 → `LineRef: STIF:Line::C01377:` and `MonitoringRef: STIF:StopPoint:Q:463026:` (Place d’Italie)
+  - Destination filters are RegExps set via the `destinationPattern` prop in `TransportDisplay` to keep only relevant direction.
+  These values are taken from `documentation/perimetre-des-donnees-tr-disponibles-plateforme-idfm.csv` and align with the SIRI identifiers described in `documentation/swagger.json`.
 
-- Auto refresh: Implemented in `src/components/TransportDisplay.jsx` with a 60s interval and a 60s cache window; a Refresh button can bypass the cache.
+- Auto refresh: Implemented in `src/components/TransportDisplay.jsx` with a 60s interval and a 60s cache window; the Refresh button can bypass the cache.
+
+### How to find or validate IDs (optional)
+
+If you ever need to re‑derive IDs from open data:
+
+- List metro lines to find Metro 6 (LineRef):
+  `curl -H "apikey: <YOUR_API_KEY>" "https://prim.iledefrance-mobilites.fr/marketplace/v1/lines?type=METRO" | jq`
+
+- Find Chevaleret stop point (MonitoringRef):
+  `curl -H "apikey: <YOUR_API_KEY>" "https://prim.iledefrance-mobilites.fr/marketplace/v1/stop-places?q=Chevaleret" | jq`
+
+2) Validate with SIRI Stop Monitoring
+
+`curl -H "Accept: application/json" -H "apikey: <YOUR_API_KEY>" \
+  "https://prim.iledefrance-mobilites.fr/marketplace/stop-monitoring?MonitoringRef=<STOPPOINT_ID>&LineRef=<LINE_REF>" | jq`
+
+You should see `MonitoredStopVisit` entries with matching `DestinationName` (e.g., “Charles de Gaulle – Étoile” for M6, “La Courneuve – 8 Mai 1945” for M7). If empty, try the other platform ID for the station or remove the `LineRef` parameter to test.
 
 ### API Key and Security Note
 The code currently assembles an API key string inside `src/components/TransportDisplay.jsx` for the IDFM API. Exposing API keys in client code is not secure for production.
@@ -71,7 +98,7 @@ npm run deploy
 If using a project subpath (no custom domain), ensure Vite `base` reflects your repo name (e.g., `base: '/your-repo/'`). With a custom root domain, `base: '/'` is correct.
 
 ## Project Structure (selected)
-- `src/pages/*` – Page components (Home, More Times, About)
+- `src/pages/*` – Page components (Home, About)
 - `src/components/*` – UI components (Header, Footer, TransportDisplay, TransportTile)
 - `public/CNAME` – Custom domain configuration for GitHub Pages
 

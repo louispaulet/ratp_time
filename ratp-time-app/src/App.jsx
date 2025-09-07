@@ -4,7 +4,7 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import HomePage from './pages/HomePage';
 import AboutPage from './pages/AboutPage';
-import MoreTimesPage from './pages/MoreTimesPage'; // Import the new More Times page
+// MoreTimesPage removed for metro-only focus
 
 function App() {
   return (
@@ -15,7 +15,7 @@ function App() {
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/about" element={<AboutPage />} />
-            <Route path="/more-times" element={<MoreTimesPage />} /> {/* New route for More Times */}
+            {/* More Times route removed */}
           </Routes>
         </main>
         <Footer />

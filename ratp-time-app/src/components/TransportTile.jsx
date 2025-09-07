@@ -32,9 +32,9 @@ function TransportTile({ bus }) {
         )}
       </div>
 
-      {/* Bus Information */}
+      {/* Metro Information */}
       <div className="w-full text-center">
-        <h2 className="text-xl font-bold mb-2">Bus {bus.number}</h2>
+        <h2 className="text-xl font-bold mb-2">Metro {bus.number}</h2>
         <p className="text-sm text-gray-400 mb-1">
           <strong className="font-medium">Direction:</strong> {bus.direction}
         </p>

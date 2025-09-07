@@ -5,11 +5,11 @@ function Header() {
   return (
     <header className="bg-black text-white p-4">
       <nav className="container mx-auto flex justify-between">
-        <Link to="/" className="font-bold text-white hover:text-gray-400">Bus Times App</Link>
+        <Link to="/" className="font-bold text-white hover:text-gray-400">Metro Times App</Link>
         <div>
           <Link to="/" className="mr-4 text-white hover:text-gray-400">Home</Link>
           <Link to="/about" className="mr-4 text-white hover:text-gray-400">About</Link>
-          <Link to="/more-times" className="text-white hover:text-gray-400">More Times</Link>
+          {/* More Times removed for this metro-focused version */}
         </div>
       </nav>
     </header>

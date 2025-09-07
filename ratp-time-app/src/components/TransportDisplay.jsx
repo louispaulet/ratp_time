@@ -2,7 +2,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import TransportTile from './TransportTile';
 
-function TransportDisplay({ busLines, monitoringRefs }) {
+function TransportDisplay({ busLines, monitoringRefs, destinationPattern }) {
   const [busData, setBusData] = useState([]);
   const [lastFetchTime, setLastFetchTime] = useState(null);
   const [isFetching, setIsFetching] = useState(false);
@@ -35,6 +35,7 @@ function TransportDisplay({ busLines, monitoringRefs }) {
 
     setIsFetching(true);
 
+    // According to swagger.json: host prim.iledefrance-mobilites.fr, basePath /marketplace, path /stop-monitoring
     const api_url = 'https://prim.iledefrance-mobilites.fr/marketplace/stop-monitoring';
     
     const part1 = 'bH6c8yOh6';
@@ -47,38 +48,60 @@ function TransportDisplay({ busLines, monitoringRefs }) {
 
     for (let bus in busLines) {
       try {
-        const response = await fetch(
-          `${api_url}?MonitoringRef=${monitoringRefs[bus]}&LineRef=${busLines[bus]}`,
-          {
+        const monitoringRef = monitoringRefs[bus];
+        const lineRef = busLines[bus];
+
+        // Build query per swagger: required MonitoringRef, optional LineRef
+        const params = new URLSearchParams({ MonitoringRef: monitoringRef });
+        if (lineRef) params.set('LineRef', lineRef);
+
+        const doRequest = async (query) =>
+          fetch(`${api_url}?${query.toString()}`, {
             headers: {
               Accept: 'application/json',
               apikey: api_key,
             },
-          }
-        );
+          });
+
+        let response = await doRequest(params);
+        // If IDs combination is not accepted (400), retry with only MonitoringRef
+        if (response.status === 400 && lineRef) {
+          console.warn(
+            `400 for line ${bus} with LineRef; retrying with MonitoringRef only.`
+          );
+          const fallback = new URLSearchParams({ MonitoringRef: monitoringRef });
+          response = await doRequest(fallback);
+        }
         if (!response.ok) {
-          console.error(`Error fetching data for bus ${bus}: ${response.status}`);
+          console.error(`Error fetching data for line ${bus}: ${response.status}`);
           continue;
         }
         const data = await response.json();
-        const visits = data.Siri.ServiceDelivery.StopMonitoringDelivery[0].MonitoredStopVisit;
+        const visits = data?.Siri?.ServiceDelivery?.StopMonitoringDelivery?.[0]?.MonitoredStopVisit || [];
         visits.forEach((visit) => {
           const journey = visit.MonitoredVehicleJourney;
-          const expectedDepartureTimeUTC = journey.MonitoredCall.ExpectedDepartureTime;
+          const expectedDepartureTimeUTC = journey?.MonitoredCall?.ExpectedDepartureTime;
+          if (!expectedDepartureTimeUTC) return;
+          const destination = journey.DestinationName?.[0]?.value || '';
+
+          // If a destinationPattern is provided, filter by it
+          if (destinationPattern instanceof RegExp) {
+            if (!destinationPattern.test(destination)) return;
+          }
 
           const busInfo = {
             number: bus,
-            direction: journey.DirectionName[0].value,
-            destination: journey.DestinationName[0].value,
-            stopName: journey.MonitoredCall.StopPointName[0].value,
+            direction: journey?.DirectionName?.[0]?.value || '',
+            destination,
+            stopName: journey?.MonitoredCall?.StopPointName?.[0]?.value || '',
             expectedTime: convertToParisTime(expectedDepartureTimeUTC),
-            status: journey.MonitoredCall.DepartureStatus,
+            status: journey?.MonitoredCall?.DepartureStatus,
             timeUntilDeparture: computeTimeUntilDeparture(expectedDepartureTimeUTC),
           };
           busDataArray.push(busInfo);
         });
       } catch (error) {
-        console.error(`Error fetching data for bus ${bus}:`, error);
+        console.error(`Error fetching data for line ${bus}:`, error);
       }
     }
 
@@ -131,14 +154,14 @@ function TransportDisplay({ busLines, monitoringRefs }) {
 
       </div>
 
-      {/* Bus Tiles */}
+      {/* Metro Tiles */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         {busData.length > 0 ? (
           busData.map((bus, index) => (
             <TransportTile key={index} bus={bus} />
           ))
         ) : (
-          <p>No bus data available.</p>
+          <p>No metro data available.</p>
         )}
       </div>
     </div>
