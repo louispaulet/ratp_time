@@ -21,7 +21,7 @@ function TransportTile({ bus }) {
   return (
     <div className="md-card" style={{display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'space-between'}}>
       {/* Time Until Departure */}
-      <div style={{display:'flex', alignItems:'center', justifyContent:'center', background:'var(--md-color-surface)', border:'2px solid var(--md-color-accent)', borderRadius:9999, width:90, height:90, marginBottom:16, boxShadow:'0 0 0 4px rgba(255,109,0,0.08)'}}>
+      <div className="mb-2 md:mb-4" style={{display:'flex', alignItems:'center', justifyContent:'center', background:'var(--md-color-surface)', border:'2px solid var(--md-color-accent)', borderRadius:9999, width:90, height:90, boxShadow:'0 0 0 4px rgba(255,109,0,0.08)'}}>
         {timeLeft > 0 ? (
           <>
             <span style={{fontSize:36, fontWeight:800, color:'var(--md-color-accent)'}}>{timeLeft}</span>
