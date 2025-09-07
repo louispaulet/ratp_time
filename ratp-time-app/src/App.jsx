@@ -9,9 +9,9 @@ import AboutPage from './pages/AboutPage';
 function App() {
   return (
     <Router>
-      <div className="flex flex-col min-h-screen bg-gray-900 text-white">
+      <div className="flex flex-col min-h-screen" style={{background:'var(--md-color-bg)', color:'var(--md-color-on-surface)'}}>
         <Header />
-        <main className="flex-grow container mx-auto p-4">
+        <main className="flex-grow container">
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/about" element={<AboutPage />} />

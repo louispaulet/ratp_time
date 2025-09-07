@@ -142,16 +142,15 @@ function TransportDisplay({ busLines, monitoringRefs, destinationPattern }) {
   return (
     <div>
       {/* Refresh Button */}
-      <div className="flex justify-center my-4">
-    <button
-      onClick={() => fetchBusData(true)} // Pass true to bypass cache
-      className={`bg-gray-800 text-white px-4 py-2 rounded-md 
-        hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200`}
-      disabled={isFetching}
-    >
-      {isFetching ? 'Refreshing...' : 'Refresh'}
-    </button>
-
+      <div style={{display:'flex', justifyContent:'center', margin:'16px 0'}}>
+        <button
+          onClick={() => fetchBusData(true)}
+          className="md-button md-button--filled-white"
+          disabled={isFetching}
+        >
+          <span className="material-symbols-rounded" style={{fontSize: 18, verticalAlign: 'middle', marginRight: 6}}>refresh</span>
+          {isFetching ? 'Refreshing…' : 'Refresh'}
+        </button>
       </div>
 
       {/* Metro Tiles */}
@@ -161,7 +160,7 @@ function TransportDisplay({ busLines, monitoringRefs, destinationPattern }) {
             <TransportTile key={index} bus={bus} />
           ))
         ) : (
-          <p>No metro data available.</p>
+          <p className="md-muted">No metro data available.</p>
         )}
       </div>
     </div>
