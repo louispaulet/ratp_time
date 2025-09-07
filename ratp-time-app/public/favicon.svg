@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- White background for contrast on dark tabs -->
+  <rect x="0" y="0" width="100" height="100" rx="16" fill="#000000"/>
+  <!-- Orange M centered -->
+  <text x="50%" y="52%" text-anchor="middle" dominant-baseline="middle"
+        font-family="system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif"
+        font-weight="800" font-size="72" fill="#ff6d00">M</text>
+</svg>
