@@ -231,3 +231,83 @@ body {
   width: 100%;
   background: linear-gradient(90deg, transparent, rgba(255,255,255,.12), transparent);
 }
+
+/* --- Transport Tile internals (FAANG-like polish) --- */
+.tile-badge {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 96px;
+  height: 96px;
+  border-radius: 9999px;
+  background: var(--md-color-surface);
+  border: 2px solid var(--md-color-accent);
+  box-shadow: 0 0 0 6px rgba(255,109,0,0.08), 0 10px 24px rgba(0,0,0,.35);
+}
+.tile-badge::before {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  border-radius: inherit;
+  background: radial-gradient(80% 80% at 30% 25%, rgba(255,255,255,.06), transparent 60%);
+  pointer-events: none;
+}
+.tile-time { font-size: 36px; font-weight: 900; color: var(--md-color-accent); line-height: 1; }
+.tile-unit { margin-left: 6px; font-size: 12px; font-weight: 700; color: #a3a0a6; }
+.tile-due { display: inline-flex; align-items: center; font-weight: 800; color: var(--md-color-accent); }
+
+.meta-line {
+  display: flex;
+  gap: 6px;
+  align-items: baseline;
+  justify-content: center;
+  color: #c8c6ca;
+  margin-bottom: 6px;
+}
+.meta-label { font-weight: 700; color: #d9d6db; }
+.meta-value { color: #c8c6ca; }
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: .3px;
+}
+.chip--outline { color: var(--md-color-accent); box-shadow: inset 0 0 0 1px rgba(255,109,0,.65); background: rgba(255,109,0,.08); }
+.chip--accent { color: #111; background: var(--md-color-accent); }
+.chip--warn { color: #ffc9b0; box-shadow: inset 0 0 0 1px rgba(255,109,0,.85); background: rgba(255,109,0,.12); }
+
+/* Cleaner, stacked key/value presentation inside tiles */
+.tile-heading { margin: 4px 0 10px; }
+
+.kv {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+.kv-label {
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: .08em;
+  color: #a3a0a6;
+  font-weight: 700;
+}
+.kv-value {
+  font-size: 14px;
+  color: #e6e1e5;
+  text-align: center;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* clamp to two lines to avoid overflow */
+  -webkit-box-orient: vertical;
+  line-height: 1.25;
+}

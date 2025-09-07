@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 
 function TransportTile({ metro }) {
   const [timeLeft, setTimeLeft] = useState(metro.timeUntilDeparture);
@@ -18,35 +18,54 @@ function TransportTile({ metro }) {
     setTimeLeft(metro.timeUntilDeparture);
   }, [metro.timeUntilDeparture]);
 
+  const statusClass = useMemo(() => {
+    const s = (metro.status || '').toString().toLowerCase();
+    if (!s) return 'chip chip--outline';
+    if (/ontime|on time|scheduled|ok/.test(s)) return 'chip chip--accent';
+    if (/delay|late|disrupt|cancel/.test(s)) return 'chip chip--warn';
+    return 'chip chip--outline';
+  }, [metro.status]);
+
   return (
     <div className="md-card" style={{display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'space-between'}}>
       {/* Time Until Departure */}
-      <div className="mb-2 md:mb-4" style={{display:'flex', alignItems:'center', justifyContent:'center', background:'var(--md-color-surface)', border:'2px solid var(--md-color-accent)', borderRadius:9999, width:90, height:90, boxShadow:'0 0 0 4px rgba(255,109,0,0.08)'}}>
+      <div className="mb-2 md:mb-4 tile-badge" aria-label="Time until departure">
         {timeLeft > 0 ? (
-          <>
-            <span style={{fontSize:36, fontWeight:800, color:'var(--md-color-accent)'}}>{timeLeft}</span>
-            <span className="md-muted" style={{fontSize:12, fontWeight:700, marginLeft:6}}>min</span>
-          </>
+          <div style={{display:'flex', alignItems:'baseline'}}>
+            <span className="tile-time">{timeLeft}</span>
+            <span className="tile-unit">min</span>
+          </div>
         ) : (
-          <span style={{fontSize:24, fontWeight:800, color:'var(--md-color-accent)'}}>Due</span>
+          <div className="tile-due">
+            <span className="material-symbols-rounded" aria-hidden style={{fontSize:18, marginRight:6}}>schedule</span>
+            Due
+          </div>
         )}
       </div>
 
       {/* Metro Information */}
       <div style={{width:'100%', textAlign:'center'}}>
-        <h2 className="md-title-medium" style={{marginBottom:8}}>Metro {metro.number}</h2>
-        <p className="md-muted" style={{marginBottom:4}}>
-          <span className="md-title-small" style={{fontWeight:600}}>Destination:</span> {metro.destination}
-        </p>
-        <p className="md-muted" style={{marginBottom:4}}>
-          <span className="md-title-small" style={{fontWeight:600}}>Stop:</span> {metro.stopName}
-        </p>
-        <p className="md-muted" style={{marginBottom:4}}>
-          <span className="md-title-small" style={{fontWeight:600}}>Departure Time:</span> {metro.expectedTime}
-        </p>
-        <p className="md-muted" style={{fontWeight:700, marginTop:8}}>
-          <span className="md-title-small" style={{fontWeight:700}}>Status:</span> {metro.status}
-        </p>
+        <h2 className="md-title-medium tile-heading">Metro {metro.number}</h2>
+
+        <div className="kv">
+          <span className="kv-label">Destination:</span>
+          <span className="kv-value" title={metro.destination}>{metro.destination}</span>
+        </div>
+        <div className="kv">
+          <span className="kv-label">Stop:</span>
+          <span className="kv-value" title={metro.stopName}>{metro.stopName}</span>
+        </div>
+        <div className="kv">
+          <span className="kv-label">Departure Time:</span>
+          <span className="kv-value" title={metro.expectedTime}>{metro.expectedTime}</span>
+        </div>
+
+        <div className="fx-divider" style={{margin:'10px 0'}} />
+
+        <div className="kv" style={{marginBottom:0}}>
+          <span className="kv-label">Status:</span>
+          <span className={statusClass}>{metro.status || '—'}</span>
+        </div>
       </div>
     </div>
   );
