@@ -12,6 +12,7 @@ Live site (if configured): https://ratp.thefrenchartist.dev
   - Auto — selects Forwards before noon and Return after noon (Europe/Paris)
   - Forwards — morning commute directions (Chevaleret → Étoile, Place d’Italie → La Courneuve)
   - Return — evening commute directions (Chaussée d’Antin → Place d’Italie, Place d’Italie → Chevaleret)
+ - Polished About page with animated cards and subtle effects
 
 ## Monitored Lines and Stops
 
@@ -93,6 +94,7 @@ Recommended options:
 ## Routing and Hosting
 - Uses `HashRouter` for static hosting compatibility (e.g., GitHub Pages).
 - Configured with a custom domain via `public/CNAME` and `homepage` in `package.json`.
+ - Routes: `/` (Auto), `/forwards`, `/return`, `/about`
 
 ## Deployment (GitHub Pages)
 Build and deploy to the `gh-pages` branch using the included script:
@@ -106,6 +108,8 @@ If using a project subpath (no custom domain), ensure Vite `base` reflects your 
 - `src/pages/*` – Page components (Auto, Forwards, Return, About)
 - `src/components/*` – UI components (Header, Footer, TransportDisplay, TransportTile)
 - `public/CNAME` – Custom domain configuration for GitHub Pages
+ - `public/favicon.svg` – Favicon (orange “M” on black)
+ - `index.html` – Document title, favicon link, fonts
 
 ## Contributing
 - Read `AGENTS.md` for coding conventions, file layout, and how to add/update monitored lines and stops.

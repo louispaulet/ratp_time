@@ -17,6 +17,7 @@ Key Files
 - `src/components/Header.jsx`, `src/components/Footer.jsx` — Layout.
 - `src/index.css` — Tailwind plus a Material‑inspired dark theme via CSS variables and `md-*` utility classes.
 - `index.html` — Document title and global font/icon includes.
+ - `public/favicon.svg` — Favicon (white or black badge with orange “M”).
 
 Wording & UX Style Guide
 - Product name: “Metro Times”. Use consistently across code and docs.
@@ -36,12 +37,32 @@ Wording & UX Style Guide
 - Footer: `© YEAR Metro Times App. All rights reserved.`
 - Keep the `<title>` in `index.html` aligned with branding and README.
 
+About Page Presentation (FX)
+- The About page may use tasteful animations/effects without changing the wording.
+- Available CSS helpers in `src/index.css`:
+  - `fx-hero` — gradient hero with soft glows.
+  - `fx-card` — premium card with a very slow shimmer overlay.
+  - `fx-grid` + `fx-animate` — staggered reveal; pass `style={{ '--i': index }}` or `index` prop in JSX for delay.
+  - Animation timings: shimmer is `30s` (`.fx-card::after { animation: fx-shimmer 30s linear infinite; }`). Keep it subtle.
+- Prefer CSS‑only animations; avoid new JS dependencies for motion.
+- Keep content text exactly as in the current About page; only adjust layout/presentation.
+
 Coding Conventions
 - React 18 functional components only; keep files focused and small. Default export the main component.
 - Prefer existing `md-*` classes and CSS variables from `src/index.css` for colors/typography; use Tailwind utilities for layout/spacing.
 - Keep inline styles minimal (only for small layout adjustments where a utility would be noisy).
 - Do not introduce state managers or new large dependencies without necessity.
 - Keep refresh cadence at 60s in `TransportDisplay.jsx` unless there’s a strong reason.
+
+Branding & Icons
+- Favicon lives at `public/favicon.svg` and is referenced in `index.html` as `/favicon.svg`.
+- Current design: rounded square badge with an orange “M” (`#ff6d00`). Background is black for strong contrast.
+- If changing colors, ensure high contrast on common tab backgrounds (white and dark).
+- Browsers cache favicons; after changes, a hard refresh or cache busting may be needed.
+
+Titles
+- `index.html` title: `Metro Times — Paris Metro Real‑Time Departures`.
+- Keep route and page titles consistent with this branding.
 
 Data & API Configuration
 - Do not hard‑code real API keys in the repo. The current key logic is demo‑only; prefer an env var (`VITE_IDFM_API_KEY`) or a proxy. If you touch API code, keep the README “API Key and Security Note” updated.
