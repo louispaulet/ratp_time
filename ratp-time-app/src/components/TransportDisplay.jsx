@@ -2,7 +2,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import TransportTile from './TransportTile';
 
-function TransportDisplay({ metroLines, metroMonitoringRefs, destinationPattern }) {
+function TransportDisplay({ metroLines, metroMonitoringRefs, destinationPattern, title }) {
   const [metroData, setMetroData] = useState([]);
   const [lastFetchTime, setLastFetchTime] = useState(null);
   const [isFetching, setIsFetching] = useState(false);
@@ -141,16 +141,21 @@ function TransportDisplay({ metroLines, metroMonitoringRefs, destinationPattern 
 
   return (
     <div>
-      {/* Refresh Button */}
-      <div style={{display:'flex', justifyContent:'center', margin:'16px 0'}}>
-        <button
-          onClick={() => fetchMetroData(true)}
-          className="md-button md-button--filled-white"
-          disabled={isFetching}
-        >
-          <span className="material-symbols-rounded" style={{fontSize: 18, verticalAlign: 'middle', marginRight: 6}}>refresh</span>
-          {isFetching ? 'Refreshing…' : 'Refresh'}
-        </button>
+      {/* Section header: title + refresh (inline on desktop) */}
+      <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between" style={{margin:'12px 0 12px'}}>
+        {title ? (
+          <h2 className="md-title-large">{title}</h2>
+        ) : null}
+        <div className="flex md:block" style={{justifyContent:'center'}}>
+          <button
+            onClick={() => fetchMetroData(true)}
+            className="md-button md-button--filled-white"
+            disabled={isFetching}
+          >
+            <span className="material-symbols-rounded" style={{fontSize: 18, verticalAlign: 'middle', marginRight: 6}}>refresh</span>
+            {isFetching ? 'Refreshing…' : 'Refresh'}
+          </button>
+        </div>
       </div>
 
       {/* Metro Tiles */}

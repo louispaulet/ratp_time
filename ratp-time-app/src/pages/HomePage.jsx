@@ -20,22 +20,22 @@ function HomePage() {
 
   return (
     <div className="container">
-      <h1 className="md-title-large" style={{margin:'12px 0 12px'}}>Metro 6 — Chevaleret → Charles de Gaulle – Étoile</h1>
       <TransportDisplay
         metroLines={metroLines}
         metroMonitoringRefs={metroMonitoringRefs}
         destinationPattern={/charles\s+de\s+gaulle/i}
+        title={"Metro 6 — Chevaleret → Charles de Gaulle – Étoile"}
       />
 
       <div className="spacer-24" />
 
-      <h2 className="md-title-large" style={{margin:'12px 0 12px'}}>Metro 7 — Place d’Italie → Chaussée d’Antin – La Fayette</h2>
       <TransportDisplay
         metroLines={{ 'M7': 'STIF:Line::C01377:' }}
         // Place d’Italie (Line 7) StopPoint candidates include Q:22365 and Q:463026; using Q:463026
         metroMonitoringRefs={{ 'M7': 'STIF:StopPoint:Q:463026:' }}
         // Filter trains heading toward La Courneuve – 8 Mai 1945 (direction that serves Chaussée d’Antin)
         destinationPattern={/courneuve/i}
+        title={"Metro 7 — Place d’Italie → Chaussée d’Antin – La Fayette"}
       />
     </div>
   );
