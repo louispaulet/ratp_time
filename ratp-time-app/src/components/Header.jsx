@@ -3,13 +3,15 @@ import { Link } from 'react-router-dom';
 
 function Header() {
   return (
-    <header className="bg-black text-white p-4">
-      <nav className="container mx-auto flex justify-between">
-        <Link to="/" className="font-bold text-white hover:text-gray-400">Metro Times App</Link>
-        <div>
-          <Link to="/" className="mr-4 text-white hover:text-gray-400">Home</Link>
-          <Link to="/about" className="mr-4 text-white hover:text-gray-400">About</Link>
-          {/* More Times removed for this metro-focused version */}
+    <header className="md-appbar">
+      <nav className="container" style={{display:'flex', alignItems:'center', justifyContent:'space-between', padding: 0}}>
+        <Link to="/" className="md-appbar__brand">
+          <span className="material-symbols-rounded" style={{verticalAlign: 'middle', marginRight: 6, color:'var(--md-color-accent)'}}>train</span>
+          Metro Times
+        </Link>
+        <div className="md-appbar__nav" style={{display:'flex', gap: 8}}>
+          <Link to="/">Home</Link>
+          <Link to="/about">About</Link>
         </div>
       </nav>
     </header>

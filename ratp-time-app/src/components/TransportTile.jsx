@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
-function TransportTile({ bus }) {
-  const [timeLeft, setTimeLeft] = useState(bus.timeUntilDeparture);
+function TransportTile({ metro }) {
+  const [timeLeft, setTimeLeft] = useState(metro.timeUntilDeparture);
 
   useEffect(() => {
     // Update timeLeft every minute
@@ -14,45 +14,38 @@ function TransportTile({ bus }) {
   }, []);
 
   useEffect(() => {
-    // Reset timeLeft if bus.timeUntilDeparture changes
-    setTimeLeft(bus.timeUntilDeparture);
-  }, [bus.timeUntilDeparture]);
+    // Reset timeLeft if metro.timeUntilDeparture changes
+    setTimeLeft(metro.timeUntilDeparture);
+  }, [metro.timeUntilDeparture]);
 
   return (
-    <div className="bg-black text-white border border-gray-700 rounded-xl p-6 flex flex-col items-center justify-between max-w-sm mx-auto mb-4 hover:shadow-lg transition-transform duration-300 hover:scale-105">
+    <div className="md-card" style={{display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'space-between'}}>
       {/* Time Until Departure */}
-      <div className="flex items-center justify-center bg-gray-800 rounded-full w-20 h-20 mb-4">
+      <div className="mb-2 md:mb-4" style={{display:'flex', alignItems:'center', justifyContent:'center', background:'var(--md-color-surface)', border:'2px solid var(--md-color-accent)', borderRadius:9999, width:90, height:90, boxShadow:'0 0 0 4px rgba(255,109,0,0.08)'}}>
         {timeLeft > 0 ? (
           <>
-            <span className="text-4xl font-bold text-white">{timeLeft}</span>
-            <span className="text-sm font-medium text-gray-400 ml-1">min</span>
+            <span style={{fontSize:36, fontWeight:800, color:'var(--md-color-accent)'}}>{timeLeft}</span>
+            <span className="md-muted" style={{fontSize:12, fontWeight:700, marginLeft:6}}>min</span>
           </>
         ) : (
-          <span className="text-4xl font-bold text-gray-400">Due</span>
+          <span style={{fontSize:24, fontWeight:800, color:'var(--md-color-accent)'}}>Due</span>
         )}
       </div>
 
       {/* Metro Information */}
-      <div className="w-full text-center">
-        <h2 className="text-xl font-bold mb-2">Metro {bus.number}</h2>
-        <p className="text-sm text-gray-400 mb-1">
-          <strong className="font-medium">Direction:</strong> {bus.direction}
+      <div style={{width:'100%', textAlign:'center'}}>
+        <h2 className="md-title-medium" style={{marginBottom:8}}>Metro {metro.number}</h2>
+        <p className="md-muted" style={{marginBottom:4}}>
+          <span className="md-title-small" style={{fontWeight:600}}>Destination:</span> {metro.destination}
         </p>
-        <p className="text-sm text-gray-400 mb-1">
-          <strong className="font-medium">Destination:</strong> {bus.destination}
+        <p className="md-muted" style={{marginBottom:4}}>
+          <span className="md-title-small" style={{fontWeight:600}}>Stop:</span> {metro.stopName}
         </p>
-        <p className="text-sm text-gray-400 mb-1">
-          <strong className="font-medium">Stop:</strong> {bus.stopName}
+        <p className="md-muted" style={{marginBottom:4}}>
+          <span className="md-title-small" style={{fontWeight:600}}>Departure Time:</span> {metro.expectedTime}
         </p>
-        <p className="text-sm text-gray-400 mb-1">
-          <strong className="font-medium">Departure Time:</strong> {bus.expectedTime}
-        </p>
-        <p
-          className={`text-sm font-bold mt-2 ${
-            bus.status === 'onTime' ? 'text-gray-300' : 'text-gray-500'
-          }`}
-        >
-          <strong>Status:</strong> {bus.status}
+        <p className="md-muted" style={{fontWeight:700, marginTop:8}}>
+          <span className="md-title-small" style={{fontWeight:700}}>Status:</span> {metro.status}
         </p>
       </div>
     </div>

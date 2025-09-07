@@ -2,8 +2,8 @@
 import React, { useEffect, useState, useRef } from 'react';
 import TransportTile from './TransportTile';
 
-function TransportDisplay({ busLines, monitoringRefs, destinationPattern }) {
-  const [busData, setBusData] = useState([]);
+function TransportDisplay({ metroLines, metroMonitoringRefs, destinationPattern, title }) {
+  const [metroData, setMetroData] = useState([]);
   const [lastFetchTime, setLastFetchTime] = useState(null);
   const [isFetching, setIsFetching] = useState(false);
   const cacheDuration = 60000; // 1 minute in milliseconds
@@ -13,18 +13,18 @@ function TransportDisplay({ busLines, monitoringRefs, destinationPattern }) {
 
   useEffect(() => {
     // Fetch data on component mount
-    fetchBusData();
+    fetchMetroData();
 
     // Set up interval to refresh data every minute
     intervalRef.current = setInterval(() => {
-      fetchBusData();
+      fetchMetroData();
     }, 60000); // 1 minute interval
 
     // Clean up interval on component unmount
     return () => clearInterval(intervalRef.current);
   }, []);
 
-  const fetchBusData = async (bypassCache = false) => {
+  const fetchMetroData = async (bypassCache = false) => {
     const now = Date.now();
 
     if (!bypassCache && lastFetchTime && now - lastFetchTime < cacheDuration) {
@@ -44,12 +44,12 @@ function TransportDisplay({ busLines, monitoringRefs, destinationPattern }) {
     
     const api_key = `${part1}${part2}${part3}`;
 
-    const busDataArray = [];
+    const metroDataArray = [];
 
-    for (let bus in busLines) {
+    for (const lineLabel in metroLines) {
       try {
-        const monitoringRef = monitoringRefs[bus];
-        const lineRef = busLines[bus];
+        const monitoringRef = metroMonitoringRefs[lineLabel];
+        const lineRef = metroLines[lineLabel];
 
         // Build query per swagger: required MonitoringRef, optional LineRef
         const params = new URLSearchParams({ MonitoringRef: monitoringRef });
@@ -67,13 +67,13 @@ function TransportDisplay({ busLines, monitoringRefs, destinationPattern }) {
         // If IDs combination is not accepted (400), retry with only MonitoringRef
         if (response.status === 400 && lineRef) {
           console.warn(
-            `400 for line ${bus} with LineRef; retrying with MonitoringRef only.`
+            `400 for line ${lineLabel} with LineRef; retrying with MonitoringRef only.`
           );
           const fallback = new URLSearchParams({ MonitoringRef: monitoringRef });
           response = await doRequest(fallback);
         }
         if (!response.ok) {
-          console.error(`Error fetching data for line ${bus}: ${response.status}`);
+          console.error(`Error fetching data for line ${lineLabel}: ${response.status}`);
           continue;
         }
         const data = await response.json();
@@ -89,8 +89,8 @@ function TransportDisplay({ busLines, monitoringRefs, destinationPattern }) {
             if (!destinationPattern.test(destination)) return;
           }
 
-          const busInfo = {
-            number: bus,
+          const metroInfo = {
+            number: lineLabel,
             direction: journey?.DirectionName?.[0]?.value || '',
             destination,
             stopName: journey?.MonitoredCall?.StopPointName?.[0]?.value || '',
@@ -98,14 +98,14 @@ function TransportDisplay({ busLines, monitoringRefs, destinationPattern }) {
             status: journey?.MonitoredCall?.DepartureStatus,
             timeUntilDeparture: computeTimeUntilDeparture(expectedDepartureTimeUTC),
           };
-          busDataArray.push(busInfo);
+          metroDataArray.push(metroInfo);
         });
       } catch (error) {
-        console.error(`Error fetching data for line ${bus}:`, error);
+        console.error(`Error fetching data for line ${lineLabel}:`, error);
       }
     }
 
-    setBusData(busDataArray);
+    setMetroData(metroDataArray);
     setLastFetchTime(Date.now());
     setIsFetching(false);
   };
@@ -141,27 +141,31 @@ function TransportDisplay({ busLines, monitoringRefs, destinationPattern }) {
 
   return (
     <div>
-      {/* Refresh Button */}
-      <div className="flex justify-center my-4">
-    <button
-      onClick={() => fetchBusData(true)} // Pass true to bypass cache
-      className={`bg-gray-800 text-white px-4 py-2 rounded-md 
-        hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200`}
-      disabled={isFetching}
-    >
-      {isFetching ? 'Refreshing...' : 'Refresh'}
-    </button>
-
+      {/* Section header: title + refresh (inline on desktop) */}
+      <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between" style={{margin:'12px 0 12px'}}>
+        {title ? (
+          <h2 className="md-title-large">{title}</h2>
+        ) : null}
+        <div className="flex md:block" style={{justifyContent:'center'}}>
+          <button
+            onClick={() => fetchMetroData(true)}
+            className="md-button md-button--filled-white"
+            disabled={isFetching}
+          >
+            <span className="material-symbols-rounded" style={{fontSize: 18, verticalAlign: 'middle', marginRight: 6}}>refresh</span>
+            {isFetching ? 'Refreshing…' : 'Refresh'}
+          </button>
+        </div>
       </div>
 
       {/* Metro Tiles */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        {busData.length > 0 ? (
-          busData.map((bus, index) => (
-            <TransportTile key={index} bus={bus} />
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4">
+        {metroData.length > 0 ? (
+          metroData.map((metro, index) => (
+            <TransportTile key={index} metro={metro} />
           ))
         ) : (
-          <p>No metro data available.</p>
+          <p className="md-muted">No metro data available.</p>
         )}
       </div>
     </div>
