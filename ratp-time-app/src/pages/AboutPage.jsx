@@ -4,7 +4,7 @@ import React from 'react'
 function AboutPage() {
   return (
     <div className="container">
-      <h1 className="md-title-large" style={{marginBottom:12}}>About Metro Times</h1>
+      <h1 className="md-title-large" style={{marginBottom:12}}>About RATP Time</h1>
       <p className="md-body" style={{marginBottom:20}}>
         Real-time departures for selected Paris Metro lines using the
         Île-de-France Mobilités SIRI Stop Monitoring API. Built with React + Vite and styled with Tailwind.
@@ -14,10 +14,11 @@ function AboutPage() {
         <h2 className="md-title-medium" style={{marginBottom:8}}>What it shows</h2>
         <ul className="list-disc list-inside md-body" style={{marginLeft:16}}>
           <li>Next departures with minutes remaining</li>
-          <li>Destination, direction, stop/platform name</li>
+          <li>Destination and stop/platform name</li>
           <li>Scheduled time and current status</li>
           <li>Auto-refresh every 60 seconds with a short cache</li>
           <li>Manual refresh button to bypass cache</li>
+          <li>Responsive grid: 2 tiles per row on mobile, 4 on desktop</li>
         </ul>
       </section>
 
@@ -43,6 +44,7 @@ function AboutPage() {
             Destination-based filtering keeps only the relevant direction for each monitored stop
           </li>
           <li>Routing uses HashRouter for static hosting compatibility</li>
+          <li>UI simplification: removed duplicate "Direction" field (destination already conveys it)</li>
         </ul>
       </section>
 
