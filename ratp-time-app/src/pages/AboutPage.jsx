@@ -29,8 +29,8 @@ function AboutPage() {
             Metro 6 — Chevaleret → filter for trains toward “Charles de Gaulle – Étoile”
           </li>
           <li>
-            Metro 7 — Place d'Italie → filter for trains toward “La Courneuve – 8 Mai 1945”
-            (direction that serves Chaussée d'Antin – La Fayette)
+            Metro 7 — Place d’Italie → filter for trains toward “La Courneuve – 8 Mai 1945”
+            (direction that serves Chaussée d’Antin – La Fayette)
           </li>
         </ul>
       </section>

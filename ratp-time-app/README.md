@@ -7,7 +7,7 @@ Live site (if configured): https://ratp.thefrenchartist.dev
 ## Features
 - Real‑time next departures (minutes remaining, destination, direction, stop name, scheduled time, status)
 - Auto‑refresh every minute with a 1‑minute cache to limit API calls
-- Manual Refresh button
+- Manual refresh button
 - Homepage sections for:
   - Metro 6 at Chevaleret → Charles de Gaulle – Étoile
   - Metro 7 at Place d’Italie → (direction La Courneuve – 8 Mai 1945, passes Chaussée d’Antin – La Fayette)
@@ -59,7 +59,7 @@ The app is client‑side and fetches directly from the IDFM SIRI Stop Monitoring
   - Destination filters are RegExps set via the `destinationPattern` prop in `TransportDisplay` to keep only relevant direction.
   These values are taken from `documentation/perimetre-des-donnees-tr-disponibles-plateforme-idfm.csv` and align with the SIRI identifiers described in `documentation/swagger.json`.
 
-- Auto refresh: Implemented in `src/components/TransportDisplay.jsx` with a 60s interval and a 60s cache window; the Refresh button can bypass the cache.
+- Auto‑refresh: Implemented in `src/components/TransportDisplay.jsx` with a 60s interval and a 60s cache window; the Refresh button can bypass the cache.
 
 ### How to find or validate IDs (optional)
 
@@ -71,7 +71,7 @@ If you ever need to re‑derive IDs from open data:
 - Find Chevaleret stop point (MonitoringRef):
   `curl -H "apikey: <YOUR_API_KEY>" "https://prim.iledefrance-mobilites.fr/marketplace/v1/stop-places?q=Chevaleret" | jq`
 
-2) Validate with SIRI Stop Monitoring
+Validate with SIRI Stop Monitoring
 
 `curl -H "Accept: application/json" -H "apikey: <YOUR_API_KEY>" \
   "https://prim.iledefrance-mobilites.fr/marketplace/stop-monitoring?MonitoringRef=<STOPPOINT_ID>&LineRef=<LINE_REF>" | jq`

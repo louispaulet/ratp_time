@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
-function TransportTile({ bus }) {
-  const [timeLeft, setTimeLeft] = useState(bus.timeUntilDeparture);
+function TransportTile({ metro }) {
+  const [timeLeft, setTimeLeft] = useState(metro.timeUntilDeparture);
 
   useEffect(() => {
     // Update timeLeft every minute
@@ -14,9 +14,9 @@ function TransportTile({ bus }) {
   }, []);
 
   useEffect(() => {
-    // Reset timeLeft if bus.timeUntilDeparture changes
-    setTimeLeft(bus.timeUntilDeparture);
-  }, [bus.timeUntilDeparture]);
+    // Reset timeLeft if metro.timeUntilDeparture changes
+    setTimeLeft(metro.timeUntilDeparture);
+  }, [metro.timeUntilDeparture]);
 
   return (
     <div className="md-card" style={{display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'space-between'}}>
@@ -34,18 +34,18 @@ function TransportTile({ bus }) {
 
       {/* Metro Information */}
       <div style={{width:'100%', textAlign:'center'}}>
-        <h2 className="md-title-medium" style={{marginBottom:8}}>Metro {bus.number}</h2>
+        <h2 className="md-title-medium" style={{marginBottom:8}}>Metro {metro.number}</h2>
         <p className="md-muted" style={{marginBottom:4}}>
-          <span className="md-title-small" style={{fontWeight:600}}>Destination:</span> {bus.destination}
+          <span className="md-title-small" style={{fontWeight:600}}>Destination:</span> {metro.destination}
         </p>
         <p className="md-muted" style={{marginBottom:4}}>
-          <span className="md-title-small" style={{fontWeight:600}}>Stop:</span> {bus.stopName}
+          <span className="md-title-small" style={{fontWeight:600}}>Stop:</span> {metro.stopName}
         </p>
         <p className="md-muted" style={{marginBottom:4}}>
-          <span className="md-title-small" style={{fontWeight:600}}>Departure Time:</span> {bus.expectedTime}
+          <span className="md-title-small" style={{fontWeight:600}}>Departure Time:</span> {metro.expectedTime}
         </p>
         <p className="md-muted" style={{fontWeight:700, marginTop:8}}>
-          <span className="md-title-small" style={{fontWeight:700}}>Status:</span> {bus.status}
+          <span className="md-title-small" style={{fontWeight:700}}>Status:</span> {metro.status}
         </p>
       </div>
     </div>
