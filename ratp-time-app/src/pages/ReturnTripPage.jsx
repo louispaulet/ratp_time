@@ -5,26 +5,32 @@ import TransportDisplay from '../components/TransportDisplay';
 function ReturnTripPage() {
   return (
     <div className="container">
-      {/* Metro 7 — Chaussée d’Antin → Place d’Italie (southbound) */}
       <TransportDisplay
-        metroLines={{ 'M7': 'STIF:Line::C01377:' }}
-        // Chaussée d'Antin - La Fayette (Line 7) platforms (both directions listed to ensure coverage)
-        metroMonitoringRefs={{ 'M7': ['STIF:StopPoint:Q:463145:', 'STIF:StopPoint:Q:22388:'] }}
-        // Trains going to Place d'Italie continue toward Villejuif – Louis Aragon or Mairie d'Ivry
-        destinationPattern={/italie|ivry|villejuif/i}
-        title={"Metro 7 — Chaussée d’Antin – La Fayette → Place d’Italie"}
+        metroLines={{ 'M12': 'STIF:Line::C01382:' }}
+        // Trinité – d’Estienne d’Orves (Line 12) toward Madeleine and Mairie d'Issy
+        metroMonitoringRefs={{ 'M12': 'STIF:StopPoint:Q:463317:' }}
+        destinationPattern={/mairie\s+d['’]?issy/i}
+        title={"Metro 12 — Trinité – d’Estienne d’Orves → Madeleine"}
       />
 
       <div className="spacer-24" />
 
-      {/* Metro 6 — Place d’Italie → Chevaleret (toward Charles de Gaulle – Étoile) */}
+      <TransportDisplay
+        metroLines={{ 'M14': 'STIF:Line::C01384:' }}
+        // Madeleine (Line 14) heading back to Bercy toward Aéroport d'Orly
+        metroMonitoringRefs={{ 'M14': 'STIF:StopPoint:Q:21961:' }}
+        destinationPattern={/orly/i}
+        title={"Metro 14 — Madeleine → Bercy"}
+      />
+
+      <div className="spacer-24" />
+
       <TransportDisplay
         metroLines={{ 'M6': 'STIF:Line::C01376:' }}
-        // Try the alternative quai at Place d'Italie for Line 6
-        metroMonitoringRefs={{ 'M6': 'STIF:StopPoint:Q:463003:' }}
-        // Trains toward Chevaleret are heading to Charles de Gaulle – Étoile
+        // Bercy (Line 6) toward Chevaleret and Charles de Gaulle – Étoile
+        metroMonitoringRefs={{ 'M6': ['STIF:StopPoint:Q:463128:', 'STIF:StopPoint:Q:22178:'] }}
         destinationPattern={/etoile|charles\s*de\s*gaulle/i}
-        title={"Metro 6 — Place d’Italie → Chevaleret"}
+        title={"Metro 6 — Bercy → Chevaleret"}
       />
     </div>
   );

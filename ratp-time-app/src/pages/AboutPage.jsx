@@ -63,11 +63,22 @@ function AboutPage() {
           <Card title="Lines and stops" icon="map" index={2}>
             <ul className="list-disc list-outside pl-4">
               <li>
-                Metro 6 — Chevaleret → filter for trains toward “Charles de Gaulle – Étoile”
+                Metro 6 — Chevaleret → filter for trains toward “Nation” (Bercy-bound)
               </li>
               <li>
-                Metro 7 — Place d’Italie → filter for trains toward “La Courneuve – 8 Mai 1945”
-                (direction that serves Chaussée d’Antin – La Fayette)
+                Metro 14 — Bercy → filter for trains toward “Saint-Denis – Pleyel” (Madeleine-bound)
+              </li>
+              <li>
+                Metro 12 — Madeleine → filter for trains toward “Mairie d’Aubervilliers” (Trinité – d’Estienne d’Orves-bound)
+              </li>
+              <li>
+                Metro 12 — Trinité – d’Estienne d’Orves → filter for trains toward “Mairie d’Issy” (Madeleine-bound)
+              </li>
+              <li>
+                Metro 14 — Madeleine → filter for trains toward “Aéroport d’Orly” (Bercy-bound)
+              </li>
+              <li>
+                Metro 6 — Bercy → filter for trains toward “Charles de Gaulle – Étoile” (Chevaleret-bound)
               </li>
             </ul>
           </Card>

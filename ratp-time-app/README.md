@@ -10,8 +10,8 @@ Live site (if configured): https://ratp.thefrenchartist.dev
 - Manual refresh button to bypass cache
 - Pages:
   - Auto — selects Forwards before noon and Return after noon (Europe/Paris)
-  - Forwards — morning commute directions (Chevaleret → Étoile, Place d’Italie → La Courneuve)
-  - Return — evening commute directions (Chaussée d’Antin → Place d’Italie, Place d’Italie → Chevaleret)
+  - Forwards — morning commute directions (Chevaleret → Bercy, Bercy → Madeleine, Madeleine → Trinité – d’Estienne d’Orves)
+  - Return — evening commute directions (Trinité – d’Estienne d’Orves → Madeleine, Madeleine → Bercy, Bercy → Chevaleret)
  - Polished About page with animated cards and subtle effects
 
 ## Monitored Lines and Stops
@@ -20,17 +20,27 @@ Configured in `src/pages/ForwardsPage.jsx` and `src/pages/ReturnTripPage.jsx`:
 
 - Metro 6
   - LineRef: `STIF:Line::C01376:`
-  - Forwards → MonitoringRef: `STIF:StopPoint:Q:22174:` (Chevaleret)
-  - Return → MonitoringRef: `STIF:StopPoint:Q:463003:` (Place d’Italie alternative platform)
-  - Destination filter: contains “Charles de Gaulle – Étoile”
-
-- Metro 7
-  - LineRef: `STIF:Line::C01377:`
-  - Forwards → MonitoringRef: `STIF:StopPoint:Q:463026:` (Place d’Italie)
-  - Return → MonitoringRefs: `STIF:StopPoint:Q:463145:` and `STIF:StopPoint:Q:22388:` (Chaussée d’Antin – La Fayette platforms)
+  - Forwards → MonitoringRefs: `STIF:StopPoint:Q:22174:` and `STIF:StopPoint:Q:463147:` (Chevaleret platforms toward Nation/Bercy)
+  - Return → MonitoringRefs: `STIF:StopPoint:Q:463128:` and `STIF:StopPoint:Q:22178:` (Bercy platforms toward Charles de Gaulle – Étoile)
   - Destination filters:
-    - Forwards: contains “La Courneuve – 8 Mai 1945” (direction serving Chaussée d’Antin)
-    - Return: contains “Italie”, “Ivry”, or “Villejuif”
+    - Forwards: contains “Nation”
+    - Return: contains “Charles de Gaulle – Étoile”
+
+- Metro 14
+  - LineRef: `STIF:Line::C01384:`
+  - Forwards → MonitoringRef: `STIF:StopPoint:Q:21957:` (Bercy toward Saint-Denis – Pleyel)
+  - Return → MonitoringRef: `STIF:StopPoint:Q:21961:` (Madeleine toward Aéroport d’Orly)
+  - Destination filters:
+    - Forwards: contains “Saint-Denis – Pleyel”
+    - Return: contains “Aéroport d’Orly”
+
+- Metro 12
+  - LineRef: `STIF:Line::C01382:`
+  - Forwards → MonitoringRef: `STIF:StopPoint:Q:463081:` (Madeleine toward Mairie d’Aubervilliers)
+  - Return → MonitoringRef: `STIF:StopPoint:Q:463317:` (Trinité – d’Estienne d’Orves toward Mairie d’Issy)
+  - Destination filters:
+    - Forwards: contains “Mairie d’Aubervilliers”
+    - Return: contains “Mairie d’Issy”
 
 ## Tech Stack
 - React 18 + Vite 5
@@ -82,7 +92,7 @@ Validate with SIRI Stop Monitoring
 `curl -H "Accept: application/json" -H "apikey: <YOUR_API_KEY>" \
   "https://prim.iledefrance-mobilites.fr/marketplace/stop-monitoring?MonitoringRef=<STOPPOINT_ID>&LineRef=<LINE_REF>" | jq`
 
-You should see `MonitoredStopVisit` entries with matching `DestinationName` (e.g., “Charles de Gaulle – Étoile” for M6, “La Courneuve – 8 Mai 1945” for M7). If empty, try the other platform ID for the station or remove the `LineRef` parameter to test.
+You should see `MonitoredStopVisit` entries with matching `DestinationName` (e.g., “Nation” for M6, “Saint-Denis – Pleyel” for M14, “Mairie d’Aubervilliers” for M12). If empty, try the other platform ID for the station or remove the `LineRef` parameter to test.
 
 ### API Key and Security Note
 The code currently assembles an API key string inside `src/components/TransportDisplay.jsx` for the IDFM API. Exposing API keys in client code is not secure for production.
