@@ -2,10 +2,14 @@
 
 APP_DIR := ratp-time-app
 
-.PHONY: install run
+.PHONY: install run deploy
 
 install:
 	npm install --prefix $(APP_DIR)
 
 run: install
 	NODE_OPTIONS="--max-http-header-size=65536" npm run dev --prefix $(APP_DIR)
+
+deploy: install
+	npm run build --prefix $(APP_DIR)
+	npm run deploy --prefix $(APP_DIR)
