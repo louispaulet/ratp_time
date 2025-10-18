@@ -8,4 +8,4 @@ install:
 	npm install --prefix $(APP_DIR)
 
 run: install
-	npm run dev --prefix $(APP_DIR)
+	NODE_OPTIONS="--max-http-header-size=65536" npm run dev --prefix $(APP_DIR)
