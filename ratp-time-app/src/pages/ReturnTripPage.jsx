@@ -29,7 +29,7 @@ function ReturnTripPage() {
         metroLines={{ 'M6': 'STIF:Line::C01376:' }}
         // Bercy (Line 6) toward Chevaleret and Charles de Gaulle – Étoile
         metroMonitoringRefs={{ 'M6': ['STIF:StopPoint:Q:463128:', 'STIF:StopPoint:Q:22178:'] }}
-        destinationPattern={/etoile|charles\s*de\s*gaulle/i}
+        destinationPattern={/(?:é|e)toile|charles\s*de\s*gaulle/i}
         title={"Metro 6 — Bercy → Chevaleret"}
       />
     </div>
